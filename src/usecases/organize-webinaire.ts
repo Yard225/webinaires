@@ -10,9 +10,9 @@ export class OrganizeWebinaire {
 
   async execute(data: {
     title: string;
+    seats: number;
     startDate: Date;
     endDate: Date;
-    seats: number;
   }) {
     const id = this.idGenerator.generate();
 

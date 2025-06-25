@@ -1,9 +1,9 @@
 type WebinaireProps = {
   id: string;
   title: string;
+  seats: number;
   startDate: Date;
   endDate: Date;
-  seats: number;
 };
 
 export class Webinaire {
