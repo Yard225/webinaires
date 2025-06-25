@@ -1,0 +1,10 @@
+import { Webinaire } from 'src/entities/webinaire.entity';
+import { IWebinaireRepository } from 'src/ports/webinaire-repository.interface';
+
+export class InMemoryWebinaireRepository implements IWebinaireRepository {
+  public database: Webinaire[] = [];
+
+  async create(webianire: Webinaire): Promise<void> {
+    this.database.push(webianire);
+  }
+}
