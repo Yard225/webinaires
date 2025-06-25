@@ -3,20 +3,24 @@ import { OrganizeWebinaire } from './organize-webinaire';
 import { FixedIDGenerator } from 'src/adapters/fixed-id-generator';
 import { Webinaire } from 'src/entities/webinaire.entity';
 import { FixedDateGenerator } from 'src/adapters/fixed-date-generator';
+import { User } from 'src/entities/user.entity';
 
 describe('Feature: organizing a webinaire', () => {
   /*
   Création de fonction dans le but de refactoriser au maximum
   */
-  function expextedWebinaireToEqual(webinaire: Webinaire) {
+  function expectedWebinaireToEqual(webinaire: Webinaire) {
     expect(webinaire.props).toEqual({
       id: 'id-1',
+      organizerId: 'john-doe',
       title: 'My first Webinaire',
       seats: 100,
       startDate: new Date('2023-01-10T10:00:00.000Z'),
       endDate: new Date('2023-01-10T11:00:00.000Z'),
     });
   }
+
+  const johnDoe = new User({ id: 'john-doe' });
 
   let repository: InMemoryWebinaireRepository;
   let idGenerator: FixedIDGenerator;
@@ -42,6 +46,7 @@ describe('Feature: organizing a webinaire', () => {
         -> usecase + repository
     */
     const payload = {
+      user: johnDoe,
       title: 'My first Webinaire',
       seats: 100,
       startDate: new Date('2023-01-10T10:00:00.000Z'),
@@ -58,7 +63,7 @@ describe('Feature: organizing a webinaire', () => {
       expect(repository.database.length).toBe(1);
 
       const createdWebinaire = repository.database[0];
-      expextedWebinaireToEqual(createdWebinaire); //?
+      expectedWebinaireToEqual(createdWebinaire); //?
     });
   });
 
@@ -68,6 +73,7 @@ describe('Feature: organizing a webinaire', () => {
         ->  Ne pas pouvoir créer de webinaire
     */
     const payload = {
+      user: johnDoe,
       title: 'My first Webinaire',
       seats: 100,
       startDate: new Date('2023-01-01T10:00:00.000Z'),
@@ -96,6 +102,7 @@ describe('Feature: organizing a webinaire', () => {
         ->  Ne pas pouvoir créer de webinaire
     */
     const payload = {
+      user: johnDoe,
       title: 'My first Webinaire',
       seats: 1001,
       startDate: new Date('2023-01-05T10:00:00.000Z'),
@@ -124,6 +131,7 @@ describe('Feature: organizing a webinaire', () => {
         ->  Ne pas pouvoir créer de webinaire
     */
     const payload = {
+      user: johnDoe,
       title: 'My first Webinaire',
       seats: 0,
       startDate: new Date('2023-01-05T10:00:00.000Z'),
