@@ -1,13 +1,13 @@
 import { InMemoryWebinaireRepository } from 'src/adapters/in-memory-webinaire.repository';
 import { OrganizeWebinaire } from './organize-webinaire';
-import { FixedIDGenerator } from 'src/adapters/fixed-id-generator';
-import { Webinaire } from 'src/entities/webinaire.entity';
-import { FixedDateGenerator } from 'src/adapters/fixed-date-generator';
-import { User } from 'src/entities/user.entity';
+import { FixedIDGenerator } from '../adapters/fixed-id-generator';
+import { Webinaire } from '../entities/webinaire.entity';
+import { FixedDateGenerator } from '../adapters/fixed-date-generator';
+import { User } from '../entities/user.entity';
 
 describe('Feature: organizing a webinaire', () => {
   /*
-  Création de fonction dans le but de refactoriser au maximum
+    Création de fonction dans le but de refactoriser au maximum
   */
   function expectedWebinaireToEqual(webinaire: Webinaire) {
     expect(webinaire.props).toEqual({
@@ -23,17 +23,17 @@ describe('Feature: organizing a webinaire', () => {
   const johnDoe = new User({ id: 'john-doe' });
 
   let repository: InMemoryWebinaireRepository;
-  let idGenerator: FixedIDGenerator;
+  let fixedIDGenerator: FixedIDGenerator;
   let fixedDateGenerator: FixedDateGenerator;
   let useCase: OrganizeWebinaire;
 
   beforeEach(() => {
     repository = new InMemoryWebinaireRepository();
-    idGenerator = new FixedIDGenerator();
+    fixedIDGenerator = new FixedIDGenerator();
     fixedDateGenerator = new FixedDateGenerator();
     useCase = new OrganizeWebinaire(
       repository,
-      idGenerator,
+      fixedIDGenerator,
       fixedDateGenerator,
     );
   });
@@ -63,7 +63,7 @@ describe('Feature: organizing a webinaire', () => {
       expect(repository.database.length).toBe(1);
 
       const createdWebinaire = repository.database[0];
-      expectedWebinaireToEqual(createdWebinaire); //?
+      expectedWebinaireToEqual(createdWebinaire);
     });
   });
 

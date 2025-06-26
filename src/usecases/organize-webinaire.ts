@@ -1,15 +1,18 @@
-import { User } from 'src/entities/user.entity';
-import { Webinaire } from 'src/entities/webinaire.entity';
-import { IDateGenerator } from 'src/ports/date-generator.interface';
-import { IIDGenerator } from 'src/ports/id-generator.interface';
-import { IWebinaireRepository } from 'src/ports/webinaire-repository.interface';
+import { User } from '../entities/user.entity';
+import { Webinaire } from '../entities/webinaire.entity';
+import { IDateGenerator } from '../ports/date-generator.interface';
+import { IIDGenerator } from '../ports/id-generator.interface';
+import { IWebinaireRepository } from '../ports/webinaire-repository.interface';
 
 export class OrganizeWebinaire {
   constructor(
     private readonly repository: IWebinaireRepository,
     private readonly idGenerator: IIDGenerator,
     private readonly actualDate: IDateGenerator,
-  ) {}
+  ) {
+    // console.log(repository, idGenerator, actualDate);
+    // console.log() nous sert à vérifier si les dépendances sont bien chargées.
+  }
 
   async execute(data: {
     user: User;
