@@ -21,6 +21,7 @@ describe('Feature: organizing webinaire', () => {
         endDate: addDays(new Date(), 5).toISOString(),
       });
 
+    console.log(result.body);
     expect(result.status).toBe(201);
     expect(result.body).toEqual({ id: expect.any(String) });
   });
