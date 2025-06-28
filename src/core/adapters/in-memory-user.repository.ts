@@ -1,5 +1,5 @@
-import { User } from '../entities/user.entity';
-import { IUserRepository } from '../ports/user-repository.interface';
+import { User } from '../../users/entities/user.entity';
+import { IUserRepository } from '../../users/ports/user-repository.interface';
 
 export class InMemoryUserRepository implements IUserRepository {
   constructor(private readonly database: User[] = []) {}

@@ -1,5 +1,5 @@
 import { InMemoryUserRepository } from '../adapters/in-memory-user.repository';
-import { User } from '../entities/user.entity';
+import { User } from '../../users/entities/user.entity';
 import { Authenticator } from './authenticator';
 
 describe('Feature: Authenticator', () => {

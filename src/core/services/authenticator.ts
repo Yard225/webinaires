@@ -1,6 +1,6 @@
-import { User } from '../entities/user.entity';
+import { User } from '../../users/entities/user.entity';
 import { IAuthenticator } from '../ports/authenticator.interface';
-import { IUserRepository } from '../ports/user-repository.interface';
+import { IUserRepository } from '../../users/ports/user-repository.interface';
 
 export class Authenticator implements IAuthenticator {
   constructor(private readonly repository: IUserRepository) {}
