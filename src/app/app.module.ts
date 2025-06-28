@@ -2,30 +2,28 @@ import { Module } from '@nestjs/common';
 
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { CurrentDateGenerator } from '../adapters/current-date-generator';
-import { RandomIDGenerator } from '../adapters/random-id-generator';
-import { InMemoryWebinaireRepository } from '../adapters/in-memory-webinaire.repository';
-import { OrganizeWebinaire } from '../usecases/organize-webinaire';
+import { RandomIDGenerator } from '../webinaires/adapters/random-id-generator';
+import { CurrentDateGenerator } from '../webinaires/adapters/current-date-generator';
+import { InMemoryWebinaireRepository } from '../webinaires/adapters/in-memory-webinaire.repository';
+import { OrganizeWebinaire } from '../webinaires/usecases/organize-webinaire';
 
 @Module({
   imports: [],
   controllers: [AppController],
   providers: [
     AppService,
-    CurrentDateGenerator,
     RandomIDGenerator,
+    CurrentDateGenerator,
     InMemoryWebinaireRepository,
     {
-      //les usescase ne sont pas perçus par NestJs
-      // donc faudra procéder de cette manière afin qu'il les prenne en compte.
-      provide: OrganizeWebinaire, //fournir le usecase
+      provide: OrganizeWebinaire,
       inject: [
-        InMemoryWebinaireRepository, //injection des dépendances
+        InMemoryWebinaireRepository,
         RandomIDGenerator,
         CurrentDateGenerator,
       ],
       useFactory: (repository, idGenerator, dateGenerator) => {
-        return new OrganizeWebinaire(repository, idGenerator, dateGenerator); //création d'une factory que l'on charge avec ses dépendances. Ps: respectez le même order que dans le test unittaire
+        return new OrganizeWebinaire(repository, idGenerator, dateGenerator);
       },
     },
   ],

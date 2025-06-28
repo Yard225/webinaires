@@ -1,4 +1,4 @@
-import z from 'zod';
+import { z } from 'zod';
 
 export namespace WebinaireAPI {
   export namespace OrganizeWebinaire {
@@ -10,6 +10,8 @@ export namespace WebinaireAPI {
     });
 
     export type Request = z.infer<typeof schema>;
-    export type Response = { id: string };
+    export type Response = {
+      id: string;
+    };
   }
 }

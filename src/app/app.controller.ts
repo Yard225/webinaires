@@ -1,10 +1,9 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import { Body, Controller, Get, HttpCode, Post } from '@nestjs/common';
 import { AppService } from './app.service';
-import { OrganizeWebinaire } from '../usecases/organize-webinaire';
-import { User } from '../entities/user.entity';
-import { ZodValidationPipe } from '../pipes/zod-validation.pipe';
-import z from 'zod';
+import { OrganizeWebinaire } from '../webinaires/usecases/organize-webinaire';
+import { ZodValidationPipe } from '../webinaires/pipes/zod-validation.pipe';
 import { WebinaireAPI } from './contract';
+import { User } from '../users/entities/user.entity';
 
 @Controller()
 export class AppController {
@@ -19,7 +18,8 @@ export class AppController {
   }
 
   @Post('/webinaires')
-  async handleOrganizeWebinaire(
+  @HttpCode(201)
+  handleOrganizeWebinaire(
     @Body(new ZodValidationPipe(WebinaireAPI.OrganizeWebinaire.schema))
     body: WebinaireAPI.OrganizeWebinaire.Request,
   ): Promise<WebinaireAPI.OrganizeWebinaire.Response> {

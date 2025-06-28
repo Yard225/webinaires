@@ -2,7 +2,7 @@ import { differenceInDays } from 'date-fns';
 
 type WebinaireProps = {
   id: string;
-  organizerId: string; //Ajout de l'utilisateur en charge de l'organisation du webinaire
+  organizerId: string;
   title: string;
   seats: number;
   startDate: Date;
@@ -12,9 +12,8 @@ type WebinaireProps = {
 export class Webinaire {
   constructor(public props: WebinaireProps) {}
 
-  /* Logique Métier - Règle de gestion */
-  isTooclose(actualDate: Date): boolean {
-    const diff = differenceInDays(this.props.startDate, actualDate);
+  isTooclose(now: Date): boolean {
+    const diff = differenceInDays(this.props.startDate, now);
     return diff < 3;
   }
 
