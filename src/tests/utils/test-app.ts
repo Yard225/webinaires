@@ -1,7 +1,7 @@
 import { INestApplication } from '@nestjs/common';
 import { Test } from '@nestjs/testing';
 import { AppModule } from '../../core/app.module';
-import { IFixture } from '../fixtures/fixture.interface';
+import { IFixture } from '../fixtures/fixtures.interface';
 
 export class TestApp {
   private app: INestApplication;
@@ -12,15 +12,15 @@ export class TestApp {
     }).compile();
 
     this.app = module.createNestApplication();
-    await this.app.init();
+    this.app.init();
   }
 
   async cleanup() {
-    await this.app.close();
+    return this.app.close();
   }
 
   async loadFixtures(fixtures: IFixture[]) {
-    return Promise.all(fixtures.map((fixture) => fixture.load(this)));
+    Promise.all(fixtures.map((fixture) => fixture.load(this)));
   }
 
   get<T>(name: any) {

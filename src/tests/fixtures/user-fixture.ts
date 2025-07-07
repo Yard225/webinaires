@@ -1,6 +1,6 @@
-import { User } from '../../users/entities/user.entity';
-import { IFixture } from './fixture.interface';
+import { User } from 'src/users/entities/user.entity';
 import { TestApp } from '../utils/test-app';
+import { IFixture } from './fixtures.interface';
 import {
   I_USER_REPOSITORY,
   IUserRepository,
@@ -11,7 +11,7 @@ export class UserFixture implements IFixture {
 
   async load(app: TestApp): Promise<void> {
     const userRepository = app.get<IUserRepository>(I_USER_REPOSITORY);
-    await userRepository.create(this.entity);
+    userRepository.create(this.entity);
   }
 
   createAuthorizationToken() {

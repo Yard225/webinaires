@@ -6,22 +6,23 @@ describe('Feature: Authenticate User', () => {
   let repository: InMemoryUserRepository;
   let authenticator: Authenticator;
 
-  const johnDoe = new User({
-    id: 'john-doe',
-    emailAddress: 'johndoe@gmail.com',
-    password: 'azerty',
-  });
-
   beforeEach(async () => {
     repository = new InMemoryUserRepository();
     authenticator = new Authenticator(repository);
 
-    repository.create(johnDoe);
+    repository.create(
+      new User({
+        id: 'john-doe',
+        emailAddress: 'johndoe@gmail.com',
+        password: 'azerty',
+      }),
+    );
   });
 
-  describe('Scenario: Happy Path', () => {
+  describe('Scenario: Happy path', () => {
     const token = Buffer.from('johndoe@gmail.com:azerty').toString('base64');
-    it('should retrieve user', async () => {
+
+    it('should authenticate user', async () => {
       const user = await authenticator.validateUser(token);
       expect(user!.props).toEqual({
         id: 'john-doe',
@@ -31,19 +32,21 @@ describe('Feature: Authenticate User', () => {
     });
   });
 
-  describe('Scenario: incorrect email', () => {
+  describe('Scenario: email is incorrect', () => {
     const token = Buffer.from('johndoe22@gmail.com:azerty').toString('base64');
-    it('should not retrieve user and return null', async () => {
+
+    it('should return null', async () => {
       const user = await authenticator.validateUser(token);
       expect(user).toBeNull();
     });
   });
 
-  describe('Scenario: incorrect password', () => {
-    const token = Buffer.from('johndoe@gmail.com:azerty123@').toString(
+  describe('Scenario: password is incorrect', () => {
+    const token = Buffer.from('johndoe@gmail.com:azerty12345').toString(
       'base64',
     );
-    it('should not retrieve user and return null', async () => {
+
+    it('should return null', async () => {
       const user = await authenticator.validateUser(token);
       expect(user).toBeNull();
     });

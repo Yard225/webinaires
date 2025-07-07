@@ -12,7 +12,7 @@ type WebinaireProps = {
 export class Webinaire {
   constructor(public props: WebinaireProps) {}
 
-  itTooClose(now: Date): boolean {
+  itTooclose(now: Date): boolean {
     const diff = differenceInDays(this.props.startDate, now);
     return diff < 3;
   }
@@ -23,5 +23,9 @@ export class Webinaire {
 
   hasNoSeats(): boolean {
     return this.props.seats < 1;
+  }
+
+  update(data: Partial<WebinaireProps>) {
+    this.props = { ...this.props, ...data };
   }
 }

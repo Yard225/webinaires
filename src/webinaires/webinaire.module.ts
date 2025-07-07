@@ -1,11 +1,11 @@
 import { Module } from '@nestjs/common';
-import { CommonModule } from '../core/common.module';
-import { I_DATE_GENERATOR } from '../core/ports/date-generator.interface';
-import { I_ID_GENERATOR } from '../core/ports/id-generator.interface';
-import { InMemoryWebinaireRepository } from './adapters/in-memory-webinaire.repository';
-import { I_WEBINAIRE_REPOSITORY } from './ports/webinaire.interface';
-import { OrganizeWebinaire } from './usecases/organize-webinaire';
 import { WebinaireController } from './controllers/webinaire.controller';
+import { OrganizeWebinaire } from './usecases/organize-webinaire';
+import { I_WEBINAIRE_REPOSITORY } from './ports/user-repository.interface';
+import { CommonModule } from '../core/common.module';
+import { I_ID_GENERATOR } from '../core/ports/id-generator.interface';
+import { I_DATE_GENERATOR } from '../core/ports/date-generator.interface';
+import { InMemoryWebinaireRepository } from './adapters/in-memory-webinaire.repository';
 
 @Module({
   imports: [CommonModule],

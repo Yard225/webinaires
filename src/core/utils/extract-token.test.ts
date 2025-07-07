@@ -1,7 +1,7 @@
 import { extractToken } from './extract-token';
 
-describe('Feature: Extract Token from Headers', () => {
-  it('should extract the token only', async () => {
+describe(' Test suite', () => {
+  it('should be defined', () => {
     expect(extractToken('Basic 123')).toBe('123');
     expect(extractToken('Test 123')).toBeNull();
     expect(extractToken('123123')).toBeNull();

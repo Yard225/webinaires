@@ -1,4 +1,4 @@
-export const extractToken = (headers: string): string | null => {
-  const [prefix, token] = headers.split(' ');
+export const extractToken = (header: string): string | null => {
+  const [prefix, token] = header.split(' ');
   return prefix !== 'Basic' ? null : token;
 };

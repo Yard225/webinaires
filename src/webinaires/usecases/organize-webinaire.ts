@@ -1,8 +1,18 @@
 import { IIDGenerator } from '../../core/ports/id-generator.interface';
-import { Webinaire } from '../entities/webinaire.entity';
-import { IWebinaireRepository } from '../ports/webinaire.interface';
-import { IDateGenerator } from '../../core/ports/date-generator.interface';
 import { User } from '../../users/entities/user.entity';
+import { Webinaire } from '../entities/webinaire.entity';
+import { IWebinaireRepository } from '../ports/user-repository.interface';
+import { IDateGenerator } from '../../core/ports/date-generator.interface';
+
+type Request = {
+  user: User;
+  title: string;
+  seats: number;
+  startDate: Date;
+  endDate: Date;
+};
+
+type Response = { id: string };
 
 export class OrganizeWebinaire {
   constructor(
@@ -11,35 +21,32 @@ export class OrganizeWebinaire {
     private readonly dateGenerator: IDateGenerator,
   ) {}
 
-  async execute(data: {
-    user: User;
-    title: string;
-    seats: number;
-    startDate: Date;
-    endDate: Date;
-  }) {
+  async execute({
+    user,
+    title,
+    seats,
+    startDate,
+    endDate,
+  }: Request): Promise<Response> {
     const id = this.idGenerator.generate();
 
     const webinaire = new Webinaire({
       id,
-      organizerId: data.user.props.id,
-      title: data.title,
-      seats: data.seats,
-      startDate: data.startDate,
-      endDate: data.endDate,
+      organizerId: user.props.id,
+      title,
+      seats,
+      startDate,
+      endDate,
     });
 
-    if (webinaire.itTooClose(this.dateGenerator.now())) {
+    if (webinaire.itTooclose(this.dateGenerator.now()))
       throw new Error('The webinaire must happens in at least 3 days');
-    }
 
-    if (webinaire.maximumSeatsReached()) {
+    if (webinaire.maximumSeatsReached())
       throw new Error('The webinaire must have maximum of 1000 seats');
-    }
 
-    if (webinaire.hasNoSeats()) {
+    if (webinaire.hasNoSeats())
       throw new Error('The webinaire must have at least 1 seat');
-    }
 
     this.repository.create(webinaire);
 

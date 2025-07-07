@@ -1,6 +1,6 @@
 import { Body, Controller, Post, Request } from '@nestjs/common';
-import { ZodValidationPipe } from '../../core/pipes/zod-validation.pipe';
-import { WebinaireAPI } from '../contracts';
+import { ZodValidationPipe } from '../pipes/zod-validation.pipe';
+import { WebinaireApi } from '../contracts';
 import { OrganizeWebinaire } from '../usecases/organize-webinaire';
 import { User } from '../../users/entities/user.entity';
 
@@ -9,11 +9,11 @@ export class WebinaireController {
   constructor(private readonly organizeWebinaire: OrganizeWebinaire) {}
 
   @Post('/webinaires')
-  async handleOrganizeWebinaire(
-    @Body(new ZodValidationPipe(WebinaireAPI.OrganizeWebinaire.schema))
-    body: WebinaireAPI.OrganizeWebinaire.Request,
+  handleOrganizeWebinaire(
+    @Body(new ZodValidationPipe(WebinaireApi.OrganizeWebinaire.schema))
+    body: WebinaireApi.OrganizeWebinaire.Request,
     @Request() request: { user: User },
-  ): Promise<WebinaireAPI.OrganizeWebinaire.Response> {
+  ): Promise<WebinaireApi.OrganizeWebinaire.Response> {
     return this.organizeWebinaire.execute({
       user: request.user,
       title: body.title,

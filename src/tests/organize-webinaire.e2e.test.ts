@@ -1,13 +1,13 @@
 import { addDays } from 'date-fns';
-import * as request from 'supertest';
 import { TestApp } from './utils/test-app';
-import { e2eUsers } from './seeds/user-seed';
+import * as request from 'supertest';
+import { e2eUsers } from './seeds/users.seed';
 import {
   I_WEBINAIRE_REPOSITORY,
   IWebinaireRepository,
-} from '../webinaires/ports/webinaire.interface';
+} from '../webinaires/ports/user-repository.interface';
 
-describe('Feature: Organizing webinaire', () => {
+describe('Feature: Organizing Webinaire', () => {
   let app: TestApp;
 
   beforeEach(async () => {
@@ -31,11 +31,12 @@ describe('Feature: Organizing webinaire', () => {
       endDate: endDate.toISOString(),
     };
 
-    it('should create the webinaire', async () => {
+    it('should be defined', async () => {
       const result = await request(app.getHttpServer())
         .post('/webinaires')
         .set('Authorization', e2eUsers.johnDoe.createAuthorizationToken())
         .send(payload);
+
       expect(result.status).toBe(201);
       expect(result.body).toEqual({ id: expect.any(String) });
 
@@ -56,7 +57,7 @@ describe('Feature: Organizing webinaire', () => {
     });
   });
 
-  describe('Scenario: The user is not authenticated', () => {
+  describe('Scenario: the user is not authenticate', () => {
     const startDate = addDays(new Date(), 4);
     const endDate = addDays(new Date(), 5);
 
@@ -67,10 +68,11 @@ describe('Feature: Organizing webinaire', () => {
       endDate: endDate.toISOString(),
     };
 
-    it('should reject', async () => {
+    it('should rejected', async () => {
       const result = await request(app.getHttpServer())
         .post('/webinaires')
         .send(payload);
+
       expect(result.status).toBe(403);
     });
   });

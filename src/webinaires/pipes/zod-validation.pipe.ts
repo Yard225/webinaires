@@ -10,6 +10,6 @@ export class ZodValidationPipe implements PipeTransform {
 
     if (result.success === true) return result.data;
 
-    return new BadRequestException('Failed to validate');
+    return new BadRequestException('Failed to valide');
   }
 }

@@ -1,15 +1,15 @@
-import { FixedIDGenerator } from 'src/core/adapters/fixed-id-generator';
+import { FixedDateGenerator } from '../../core/adapters/fixed-date-generator';
+import { FixedIDGenerator } from '../../core/adapters/fixed-id-generator';
+import { User } from '../../users/entities/user.entity';
 import { InMemoryWebinaireRepository } from '../adapters/in-memory-webinaire.repository';
 import { Webinaire } from '../entities/webinaire.entity';
 import { OrganizeWebinaire } from './organize-webinaire';
-import { FixedDateGenerator } from '../../core/adapters/fixed-date-generator';
-import { User } from '../../users/entities/user.entity';
 
 describe('Feature: Organize Webinaire', () => {
   function expectEqualToWebinaire(webinaire: Webinaire) {
     expect(webinaire.props).toEqual({
       id: 'id-1',
-      organizerId: 'john-doe',
+      organizerId: johnDoe.props.id,
       title: 'my first webinaire',
       seats: 100,
       startDate: new Date('2025-01-10T10:00:00.000Z'),
@@ -35,7 +35,7 @@ describe('Feature: Organize Webinaire', () => {
     useCase = new OrganizeWebinaire(repository, idGenerator, dateGenerator);
   });
 
-  describe('Scenario: Happy Path', () => {
+  describe('Scenario: Happy path', () => {
     const payload = {
       user: johnDoe,
       title: 'my first webinaire',
@@ -43,7 +43,6 @@ describe('Feature: Organize Webinaire', () => {
       startDate: new Date('2025-01-10T10:00:00.000Z'),
       endDate: new Date('2025-01-11T10:00:00.000Z'),
     };
-
     it('should return an ID', async () => {
       const result = await useCase.execute(payload);
       expect(result.id).toBe('id-1');
@@ -53,8 +52,8 @@ describe('Feature: Organize Webinaire', () => {
       await useCase.execute(payload);
       expect(repository.database.length).toBe(1);
 
-      const createdWebinaire = await repository.findById('id-1');
-      expectEqualToWebinaire(createdWebinaire!);
+      const createdWebinaire = repository.database[0];
+      expectEqualToWebinaire(createdWebinaire);
     });
   });
 
@@ -66,14 +65,13 @@ describe('Feature: Organize Webinaire', () => {
       startDate: new Date('2025-01-03T10:00:00.000Z'),
       endDate: new Date('2025-01-04T10:00:00.000Z'),
     };
-
     it('should reject', async () => {
       await expect(useCase.execute(payload)).rejects.toThrow(
         'The webinaire must happens in at least 3 days',
       );
     });
 
-    it('should dont create the webinaire in database', async () => {
+    it('should dont integrate data into database', async () => {
       try {
         await useCase.execute(payload);
         expect(repository.database.length).toBe(0);
@@ -89,14 +87,13 @@ describe('Feature: Organize Webinaire', () => {
       startDate: new Date('2025-01-10T10:00:00.000Z'),
       endDate: new Date('2025-01-11T10:00:00.000Z'),
     };
-
     it('should reject', async () => {
       await expect(useCase.execute(payload)).rejects.toThrow(
         'The webinaire must have maximum of 1000 seats',
       );
     });
 
-    it('should dont create the webinaire in database', async () => {
+    it('should dont integrate data into database', async () => {
       try {
         await useCase.execute(payload);
         expect(repository.database.length).toBe(0);
@@ -112,14 +109,13 @@ describe('Feature: Organize Webinaire', () => {
       startDate: new Date('2025-01-10T10:00:00.000Z'),
       endDate: new Date('2025-01-11T10:00:00.000Z'),
     };
-
     it('should reject', async () => {
       await expect(useCase.execute(payload)).rejects.toThrow(
         'The webinaire must have at least 1 seat',
       );
     });
 
-    it('should dont create the webinaire in database', async () => {
+    it('should dont integrate data into database', async () => {
       try {
         await useCase.execute(payload);
         expect(repository.database.length).toBe(0);

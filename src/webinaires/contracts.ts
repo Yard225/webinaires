@@ -1,6 +1,6 @@
-import { z } from 'zod';
+import z from 'zod';
 
-export namespace WebinaireAPI {
+export namespace WebinaireApi {
   export namespace OrganizeWebinaire {
     export const schema = z.object({
       title: z.string(),
