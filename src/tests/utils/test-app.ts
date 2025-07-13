@@ -1,7 +1,7 @@
-import { INestApplication } from '@nestjs/common';
 import { Test } from '@nestjs/testing';
 import { AppModule } from '../../core/app.module';
-import { IFixture } from '../fixtures/fixtures.interface';
+import { INestApplication } from '@nestjs/common';
+import { IFixture } from '../fixtures/fixture.interface';
 
 export class TestApp {
   private app: INestApplication;
@@ -23,7 +23,7 @@ export class TestApp {
     Promise.all(fixtures.map((fixture) => fixture.load(this)));
   }
 
-  get<T>(name: any) {
+  get<T>(name: string) {
     return this.app.get<T>(name);
   }
 

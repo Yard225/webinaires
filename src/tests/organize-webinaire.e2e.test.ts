@@ -1,11 +1,11 @@
 import { addDays } from 'date-fns';
 import { TestApp } from './utils/test-app';
 import * as request from 'supertest';
-import { e2eUsers } from './seeds/users.seed';
+import { e2eUsers } from './seeds/user.seed';
 import {
   I_WEBINAIRE_REPOSITORY,
   IWebinaireRepository,
-} from '../webinaires/ports/user-repository.interface';
+} from '../webinaires/ports/webinaire-repository.interface';
 
 describe('Feature: Organizing Webinaire', () => {
   let app: TestApp;
@@ -17,10 +17,10 @@ describe('Feature: Organizing Webinaire', () => {
   });
 
   afterEach(async () => {
-    await app.cleanup();
+    app.cleanup();
   });
 
-  describe('Scenario: Happy path', () => {
+  describe('Scenario: Happy Path', () => {
     const startDate = addDays(new Date(), 4);
     const endDate = addDays(new Date(), 5);
 
@@ -31,7 +31,7 @@ describe('Feature: Organizing Webinaire', () => {
       endDate: endDate.toISOString(),
     };
 
-    it('should be defined', async () => {
+    it('should create the webinaire', async () => {
       const result = await request(app.getHttpServer())
         .post('/webinaires')
         .set('Authorization', e2eUsers.johnDoe.createAuthorizationToken())
@@ -57,7 +57,7 @@ describe('Feature: Organizing Webinaire', () => {
     });
   });
 
-  describe('Scenario: the user is not authenticate', () => {
+  describe('Scenario: the user is not authenticated', () => {
     const startDate = addDays(new Date(), 4);
     const endDate = addDays(new Date(), 5);
 
@@ -68,7 +68,7 @@ describe('Feature: Organizing Webinaire', () => {
       endDate: endDate.toISOString(),
     };
 
-    it('should rejected', async () => {
+    it('should reject', async () => {
       const result = await request(app.getHttpServer())
         .post('/webinaires')
         .send(payload);

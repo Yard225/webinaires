@@ -1,52 +1,33 @@
-import { User } from '../../users/entities/user.entity';
+import { testUsers } from 'src/users/test/unit-test.user';
 import { InMemoryWebinaireRepository } from '../adapters/in-memory-webinaire.repository';
-import { Webinaire } from '../entities/webinaire.entity';
 import { ChangeSeats } from './change-seats';
+import { Webinaire } from '../entities/webinaire.entity';
 
-describe('Feature: Changing the number of seats', () => {
-  const johnDoe = new User({
-    id: 'john-doe',
-    emailAddress: 'johndoe@gmail.com',
-    password: 'azerty',
-  });
-
-  const webinaire = new Webinaire({
-    id: 'id-1',
-    organizerId: 'john-doe',
-    title: 'My first webinaire',
-    seats: 50,
-    startDate: new Date('2025-01-01T10:00:00.000Z'),
-    endDate: new Date('2025-01-01T10:00:00.000Z'),
-  });
-  //   function expectEqualToWebinaire(webinaire: Webinaire) {
-  //     expect(webinaire.props).toEqual({
-  //       id: 'id-1',
-  //       organizerId: johnDoe.props.id,
-  //       title: 'my first webinaire',
-  //       seats: 100,
-  //       startDate: new Date('2025-01-10T10:00:00.000Z'),
-  //       endDate: new Date('2025-01-11T10:00:00.000Z'),
-  //     });
-  //   }
-
-  //   let dateGenerator: FixedDateGenerator;
-  //   let idGenerator: FixedIDGenerator;
+describe('Feature: Organize webinaire', () => {
   let webinaireRepository: InMemoryWebinaireRepository;
   let useCase: ChangeSeats;
 
+  const webinaire = new Webinaire({
+    id: 'id-1',
+    organizerId: testUsers.alice.props.id,
+    title: 'My first webinaire',
+    seats: 50,
+    startDate: new Date('2025-01-10T10:00:00.000Z'),
+    endDate: new Date('2025-01-11T10:00:00.000Z'),
+  });
+
   beforeEach(async () => {
-    // dateGenerator = new FixedDateGenerator();
-    // idGenerator = new FixedIDGenerator();
     webinaireRepository = new InMemoryWebinaireRepository([webinaire]);
     useCase = new ChangeSeats(webinaireRepository);
   });
 
-  describe('Scenario: Happy path', () => {
+  describe('Scenario: Happy Path', () => {
     const payload = {
-      user: johnDoe,
+      user: testUsers.alice,
       webinaireId: 'id-1',
       seats: 100,
     };
+
     it('should change the number of seats', async () => {
       const result = await useCase.execute(payload);
 
@@ -55,16 +36,79 @@ describe('Feature: Changing the number of seats', () => {
     });
   });
 
-  describe('Scenario: The webinaire does not exist', () => {
+  describe('Scenario: The webinaire is not found', () => {
     const payload = {
-      user: johnDoe,
-      webinaireId: 'id-3',
+      user: testUsers.alice,
+      webinaireId: 'not-exist',
       seats: 100,
     };
-    it('should fail', async () => {
+
+    it('should reject because the webinaire is not found', async () => {
       await expect(useCase.execute(payload)).rejects.toThrow(
         'Webinaire not found',
       );
+    });
+
+    it('should not change the number of seats', async () => {
+      const webinaire = await webinaireRepository.findById('id-1');
+      expect(webinaire!.props.seats).toEqual(50);
+    });
+  });
+
+  describe('Scenario: updating the webinaire of someone else', () => {
+    const payload = {
+      user: testUsers.bob,
+      webinaireId: 'id-1',
+      seats: 100,
+    };
+
+    it('should not allowed to update this webinaire', async () => {
+      await expect(() => useCase.execute(payload)).rejects.toThrow(
+        'You are not allowed to update this webinaire',
+      );
+    });
+
+    it('should not change the number of seats', async () => {
+      const webinaire = await webinaireRepository.findById('id-1');
+      expect(webinaire!.props.seats).toEqual(50);
+    });
+  });
+
+  describe('Scenario: reducing the number of seats', () => {
+    const payload = {
+      user: testUsers.alice,
+      webinaireId: 'id-1',
+      seats: 49,
+    };
+
+    it('should not permitted to reduce the number of seats more than it original value', async () => {
+      await expect(() => useCase.execute(payload)).rejects.toThrow(
+        'You cannot reduce the number of seats',
+      );
+    });
+
+    it('should not change the number of seats', async () => {
+      const webinaire = await webinaireRepository.findById('id-1');
+      expect(webinaire!.props.seats).toEqual(50);
+    });
+  });
+
+  describe('Scenario: The webinaire must have a maximum of 1000 seats', () => {
+    const payload = {
+      user: testUsers.alice,
+      webinaireId: 'id-1',
+      seats: 1001,
+    };
+
+    it('should reject', async () => {
+      await expect(() => useCase.execute(payload)).rejects.toThrow(
+        'The webinaire must have a maximum of 1000 seats',
+      );
+    });
+
+    it('should not change the number of seats', async () => {
+      const webinaire = await webinaireRepository.findById('id-1');
+      expect(webinaire!.props.seats).toEqual(50);
     });
   });
 });

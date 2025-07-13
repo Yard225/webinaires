@@ -1,13 +1,14 @@
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { CommonModule } from './common.module';
+import { WebinaireModule } from '../webinaires/webinaire.module';
+import { UserModule } from '../users/user.module';
 import { Authenticator } from '../users/services/authenticator';
 import { I_USER_REPOSITORY } from '../users/ports/user-repository.interface';
 import { APP_GUARD } from '@nestjs/core';
 import { AuthGuard } from './auth.guard';
-import { CommonModule } from './common.module';
-import { WebinaireModule } from '../webinaires/webinaire.module';
-import { UserModule } from '../users/user.module';
+import { DocumentBuilder } from '@nestjs/swagger';
 
 @Module({
   imports: [CommonModule, WebinaireModule, UserModule],

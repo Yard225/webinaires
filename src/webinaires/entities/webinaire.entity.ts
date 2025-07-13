@@ -1,6 +1,7 @@
+import { BaseEntity } from '../../shared/entity';
 import { differenceInDays } from 'date-fns';
 
-type WebinaireProps = {
+type Props = {
   id: string;
   organizerId: string;
   title: string;
@@ -9,23 +10,21 @@ type WebinaireProps = {
   endDate: Date;
 };
 
-export class Webinaire {
-  constructor(public props: WebinaireProps) {}
-
-  itTooclose(now: Date): boolean {
+export class Webinaire extends BaseEntity<Props> {
+  itTooClose(now: Date): boolean {
     const diff = differenceInDays(this.props.startDate, now);
     return diff < 3;
   }
 
-  maximumSeatsReached(): boolean {
+  maximumSeatReached(): boolean {
     return this.props.seats > 1000;
   }
 
-  hasNoSeats(): boolean {
+  minimumSeatNotReached(): boolean {
     return this.props.seats < 1;
   }
 
-  update(data: Partial<WebinaireProps>) {
-    this.props = { ...this.props, ...data };
+  isOrganizer(userId: string): boolean {
+    return this.props.organizerId === userId;
   }
 }

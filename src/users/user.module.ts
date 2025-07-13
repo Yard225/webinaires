@@ -1,15 +1,21 @@
 import { Module } from '@nestjs/common';
-import { InMemoryUserRepository } from './adapters/in-memory-user.repository';
 import { I_USER_REPOSITORY } from './ports/user-repository.interface';
-import { CommonModule } from '../core/common.module';
+import { InMemoryUserRepository } from './adapters/in-memory-user.repository';
+import { Authenticator } from './services/authenticator';
 
 @Module({
-  imports: [CommonModule],
+  imports: [],
+  controllers: [],
   providers: [
     {
       provide: I_USER_REPOSITORY,
-      useFactory: () => {
-        return new InMemoryUserRepository();
+      useClass: InMemoryUserRepository,
+    },
+    {
+      provide: Authenticator,
+      inject: [I_USER_REPOSITORY],
+      useFactory: (repository) => {
+        return new Authenticator(repository);
       },
     },
   ],

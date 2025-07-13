@@ -1,8 +1,12 @@
 import { IIDGenerator } from '../../core/ports/id-generator.interface';
+import { IExecutable } from '../../shared/executable';
+import { IWebinaireRepository } from '../ports/webinaire-repository.interface';
 import { User } from '../../users/entities/user.entity';
 import { Webinaire } from '../entities/webinaire.entity';
-import { IWebinaireRepository } from '../ports/user-repository.interface';
-import { IDateGenerator } from '../../core/ports/date-generator.interface';
+import { IDateGenerator } from '../../core/ports/date-generator';
+import { HappenTooEarlyException } from '../exceptions/happen-too-early.exception';
+import { MaximumSeatsReachedException } from '../exceptions/maximum-seats-reached.exception';
+import { MinimumSeatsNotReachedException } from '../exceptions/minimum-seats-not-reached.exception';
 
 type Request = {
   user: User;
@@ -14,7 +18,7 @@ type Request = {
 
 type Response = { id: string };
 
-export class OrganizeWebinaire {
+export class OrganizeWebinaire implements IExecutable<Request, Response> {
   constructor(
     private readonly repository: IWebinaireRepository,
     private readonly idGenerator: IIDGenerator,
@@ -33,20 +37,20 @@ export class OrganizeWebinaire {
     const webinaire = new Webinaire({
       id,
       organizerId: user.props.id,
-      title,
-      seats,
-      startDate,
-      endDate,
+      title: title,
+      seats: seats,
+      startDate: startDate,
+      endDate: endDate,
     });
 
-    if (webinaire.itTooclose(this.dateGenerator.now()))
-      throw new Error('The webinaire must happens in at least 3 days');
+    if (webinaire.itTooClose(this.dateGenerator.now()))
+      throw new HappenTooEarlyException();
 
-    if (webinaire.maximumSeatsReached())
-      throw new Error('The webinaire must have maximum of 1000 seats');
+    if (webinaire.maximumSeatReached())
+      throw new MaximumSeatsReachedException();
 
-    if (webinaire.hasNoSeats())
-      throw new Error('The webinaire must have at least 1 seat');
+    if (webinaire.minimumSeatNotReached())
+      throw new MinimumSeatsNotReachedException();
 
     this.repository.create(webinaire);
 
