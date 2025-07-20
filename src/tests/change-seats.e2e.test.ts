@@ -10,6 +10,9 @@ import { e2eWebinaires } from './seeds/webinaire.seed';
 describe('Feature: Changing seats', () => {
   let app: TestApp;
 
+  const id = e2eWebinaires.webinaire.entity.props.id;
+  const seats = 100;
+
   beforeEach(async () => {
     app = new TestApp();
     await app.setup();
@@ -21,9 +24,6 @@ describe('Feature: Changing seats', () => {
   });
 
   describe('Scenario: Happy Path', () => {
-    const id = 'id-1';
-    const seats = 100;
-
     it('should change the number of seats', async () => {
       const result = await request(app.getHttpServer())
         .post(`/webinaires/${id}/seats`)
@@ -44,9 +44,6 @@ describe('Feature: Changing seats', () => {
   });
 
   describe('Scenario: the user is not authenticated', () => {
-    const id = 'id-1';
-    const seats = 100;
-
     it('should reject', async () => {
       const result = await request(app.getHttpServer())
         .post(`/webinaires/${id}/seats`)

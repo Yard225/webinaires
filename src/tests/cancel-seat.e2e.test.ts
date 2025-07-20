@@ -1,11 +1,12 @@
 import { TestApp } from './utils/test-app';
 import * as request from 'supertest';
 import { e2eUsers } from './seeds/user.seed';
-import {
-  I_WEBINAIRE_REPOSITORY,
-  IWebinaireRepository,
-} from '../webinaires/ports/webinaire-repository.interface';
 import { e2eWebinaires } from './seeds/webinaire.seed';
+import {
+  I_PARTICIPATION_REPOSITORY,
+  IParticipationRepository,
+} from '../webinaires/ports/participation-repository.interface';
+import { e2eParticipation } from './seeds/participation.seed';
 
 describe('Feature: Cancelling webinaire', () => {
   let app: TestApp;
@@ -19,6 +20,7 @@ describe('Feature: Cancelling webinaire', () => {
       e2eUsers.alice,
       e2eUsers.bob,
       e2eWebinaires.webinaire,
+      e2eParticipation.bob,
     ]); //ne pas oublier de créer des fixtures
   });
 
@@ -27,27 +29,30 @@ describe('Feature: Cancelling webinaire', () => {
   });
 
   describe('Scenario: Happy Path', () => {
-    it('should cancel the webinaire', async () => {
+    it('should cancel the participation', async () => {
       const result = await request(app.getHttpServer())
-        .delete(`/webinaires/${id}`)
-        .set('Authorization', e2eUsers.alice.createAuthorizationToken());
+        .delete(`/webinaires/${id}/participations`)
+        .set('Authorization', e2eUsers.bob.createAuthorizationToken());
 
       expect(result.status).toBe(200);
 
-      const webinaireRepository = app.get<IWebinaireRepository>(
-        I_WEBINAIRE_REPOSITORY,
+      const participationRepository = app.get<IParticipationRepository>(
+        I_PARTICIPATION_REPOSITORY,
       );
 
-      const webinaire = await webinaireRepository.findById(id);
+      const participation = await participationRepository.findOne(
+        e2eUsers.bob.entity.props.id,
+        id,
+      );
 
-      expect(webinaire).toBeNull();
+      expect(participation).toBeNull();
     });
   });
 
   describe('Scenario: the user is not authenticated', () => {
     it('should reject', async () => {
       const result = await request(app.getHttpServer()).delete(
-        `/webinaires/${id}`,
+        `/webinaires/${id}/participations`,
       );
 
       expect(result.status).toBe(403);

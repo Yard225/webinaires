@@ -12,4 +12,10 @@ export const testUsers = {
     emailAddress: 'bob@abc.fr',
     password: 'bob123',
   }),
+
+  charles: new User({
+    id: 'charles',
+    emailAddress: 'charles@abc.fr',
+    password: 'charles123',
+  }),
 };

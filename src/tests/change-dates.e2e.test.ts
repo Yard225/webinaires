@@ -11,7 +11,7 @@ import { addDays } from 'date-fns';
 describe('Feature: Changing seats', () => {
   let app: TestApp;
 
-  const id = 'id-1';
+  const id = e2eWebinaires.webinaire.entity.props.id;
   const startDate = addDays(new Date(), 8);
   const endDate = addDays(new Date(), 8);
 

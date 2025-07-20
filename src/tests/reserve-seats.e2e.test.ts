@@ -1,13 +1,13 @@
 import { TestApp } from './utils/test-app';
 import * as request from 'supertest';
 import { e2eUsers } from './seeds/user.seed';
-import {
-  I_WEBINAIRE_REPOSITORY,
-  IWebinaireRepository,
-} from '../webinaires/ports/webinaire-repository.interface';
 import { e2eWebinaires } from './seeds/webinaire.seed';
+import {
+  I_PARTICIPATION_REPOSITORY,
+  IParticipationRepository,
+} from '../webinaires/ports/participation-repository.interface';
 
-describe('Feature: Cancelling webinaire', () => {
+describe('Feature: Reserving a seat', () => {
   let app: TestApp;
 
   const id = e2eWebinaires.webinaire.entity.props.id;
@@ -17,7 +17,7 @@ describe('Feature: Cancelling webinaire', () => {
     await app.setup();
     await app.loadFixtures([
       e2eUsers.alice,
-      e2eUsers.bob,
+      e2eUsers.charles,
       e2eWebinaires.webinaire,
     ]); //ne pas oublier de créer des fixtures
   });
@@ -27,27 +27,30 @@ describe('Feature: Cancelling webinaire', () => {
   });
 
   describe('Scenario: Happy Path', () => {
-    it('should cancel the webinaire', async () => {
+    it('should reserve a seats for the webinaire', async () => {
       const result = await request(app.getHttpServer())
-        .delete(`/webinaires/${id}`)
-        .set('Authorization', e2eUsers.alice.createAuthorizationToken());
+        .post(`/webinaires/${id}/participations`)
+        .set('Authorization', e2eUsers.charles.createAuthorizationToken());
 
-      expect(result.status).toBe(200);
+      expect(result.status).toBe(201);
 
-      const webinaireRepository = app.get<IWebinaireRepository>(
-        I_WEBINAIRE_REPOSITORY,
+      const participationRepository = app.get<IParticipationRepository>(
+        I_PARTICIPATION_REPOSITORY,
       );
 
-      const webinaire = await webinaireRepository.findById(id);
+      const participation = await participationRepository.findOne(
+        e2eUsers.charles.entity.props.id,
+        id,
+      );
 
-      expect(webinaire).toBeNull();
+      expect(participation).not.toBeNull();
     });
   });
 
   describe('Scenario: the user is not authenticated', () => {
     it('should reject', async () => {
-      const result = await request(app.getHttpServer()).delete(
-        `/webinaires/${id}`,
+      const result = await request(app.getHttpServer()).post(
+        `/webinaires/${id}/participations`,
       );
 
       expect(result.status).toBe(403);

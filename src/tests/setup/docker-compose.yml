@@ -1,0 +1,12 @@
+version: '3.8'
+
+services:
+  mongo:
+    image: 'mongo:latest'
+    environment:
+      MONGO_INITDB_DATABASE: webinaires
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: azerty
+      TZ: 'Europe/Paris'
+    ports:
+      - '3701:27017'

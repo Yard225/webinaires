@@ -10,12 +10,11 @@ export class InMemoryWebinaireRepository implements IWebinaireRepository {
 
   findByIdSync(id: string): Webinaire | null {
     const webinaire = this.database.find((w) => w.props.id === id);
-    return webinaire ?? null;
+    return webinaire ? new Webinaire({ ...webinaire.props }) : null;
   }
 
   async findById(id: string): Promise<Webinaire | null> {
-    const webinaire = this.findByIdSync(id);
-    return webinaire ? new Webinaire({ ...webinaire.props }) : null;
+    return this.findByIdSync(id);
   }
 
   async findAll(): Promise<Webinaire[]> {

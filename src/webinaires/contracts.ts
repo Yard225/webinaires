@@ -33,4 +33,12 @@ export namespace WebinaireAPI {
   export namespace CancelWebinaire {
     export type Response = void;
   }
+
+  export namespace ReserveSeat {
+    export type Response = void;
+  }
+
+  export namespace CancelSeat {
+    export type Response = void;
+  }
 }

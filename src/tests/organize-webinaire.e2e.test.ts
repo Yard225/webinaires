@@ -10,6 +10,16 @@ import {
 describe('Feature: Organizing Webinaire', () => {
   let app: TestApp;
 
+  const startDate = addDays(new Date(), 4);
+  const endDate = addDays(new Date(), 5);
+
+  const payload = {
+    title: 'My first webinaire',
+    seats: 100,
+    startDate: startDate.toISOString(),
+    endDate: endDate.toISOString(),
+  };
+
   beforeEach(async () => {
     app = new TestApp();
     await app.setup();
@@ -21,16 +31,6 @@ describe('Feature: Organizing Webinaire', () => {
   });
 
   describe('Scenario: Happy Path', () => {
-    const startDate = addDays(new Date(), 4);
-    const endDate = addDays(new Date(), 5);
-
-    const payload = {
-      title: 'My first webinaire',
-      seats: 100,
-      startDate: startDate.toISOString(),
-      endDate: endDate.toISOString(),
-    };
-
     it('should create the webinaire', async () => {
       const result = await request(app.getHttpServer())
         .post('/webinaires')
@@ -58,16 +58,6 @@ describe('Feature: Organizing Webinaire', () => {
   });
 
   describe('Scenario: the user is not authenticated', () => {
-    const startDate = addDays(new Date(), 4);
-    const endDate = addDays(new Date(), 5);
-
-    const payload = {
-      title: 'My first webinaire',
-      seats: 100,
-      startDate: startDate.toISOString(),
-      endDate: endDate.toISOString(),
-    };
-
     it('should reject', async () => {
       const result = await request(app.getHttpServer())
         .post('/webinaires')

@@ -10,7 +10,7 @@ import { IFixture } from './fixture.interface';
 export class UserFixture extends BaseFixture<User> implements IFixture {
   async load(app: TestApp): Promise<void> {
     const userRepository = app.get<IUserRepository>(I_USER_REPOSITORY);
-    const user = userRepository.create(this.entity);
+    await userRepository.create(this.entity);
   }
 
   createAuthorizationToken() {
